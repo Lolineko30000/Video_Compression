@@ -6,11 +6,13 @@ import io.undertow.util.Headers;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import org.opencv.video.Video;
+
+import VideoCompression.VideoSVD;
+
+
 
 public class App {
 
@@ -19,6 +21,8 @@ public class App {
     private static final String CSS_FILE_PATH = "css/styles.css";
 
     public static void main(final String[] args) {
+
+        VideoSVD.compress("/home/lolineko/Downloads/prueba.mp4", -1);
 
         Undertow server = Undertow.builder().addHttpListener(8080, "localhost")
                 .setHandler(new HttpHandler() {

@@ -16,6 +16,19 @@
          <artifactId>undertow-servlet</artifactId>
          <version>1.0.1.Final</version>
       </dependency>
+
+      <dependency>
+         <groupId>org.bytedeco</groupId>
+         <artifactId>javacv-platform</artifactId>
+         <version>1.5.7</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-math3</artifactId>
+         <version>3.6.1</version>
+      </dependency>
+
    </dependencies>
    <build>
       <defaultGoal>compile</defaultGoal>

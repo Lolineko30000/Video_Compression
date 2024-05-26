@@ -1,4 +1,6 @@
 
+clear;
+
 # Compilador
 ./maven/bin/mvn
 
