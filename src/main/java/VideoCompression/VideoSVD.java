@@ -7,6 +7,7 @@ import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.global.opencv_imgproc;
 
@@ -18,47 +19,63 @@ public class VideoSVD {
      * @param k             number of eigen values to be taken for the compression
      */
 
-    public static void compress(String videoFilePath, int k) {
+    public static void compress(String videoFilePath, String outPath ,int k) {
 
-        FFmpegFrameGrabber grabber;
-        OpenCVFrameConverter.ToMat converter;
-        CanvasFrame canvas;
+        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(videoFilePath);
+        FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(outPath, grabber.getImageWidth(), grabber.getImageHeight());
+        recorder.setVideoCodec(grabber.getVideoCodec()); 
+        recorder.setFrameRate(grabber.getFrameRate());
+        recorder.setFormat("mp4"); // Output format
+        recorder.setFrameRate(grabber.getFrameRate()); // Set frame rate
+        recorder.setVideoBitrate(grabber.getVideoBitrate()); // Set video bitrate
+    
+
+
+        
+        OpenCVFrameConverter.ToMat converter = new OpenCVFrameConverter.ToMat();
         Mat compressedFrame;
+        
 
         try {
-            grabber = new FFmpegFrameGrabber(videoFilePath);
-            converter = new OpenCVFrameConverter.ToMat();
-            canvas = new CanvasFrame("Processed Video");
+
 
             grabber.start();
-            canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-
+            recorder.start();
+            
             Frame frame;
-
             while ((frame = grabber.grab()) != null) {
 
                 RealMatrix U = null, S = null, V = null;
                 Mat mat = converter.convert(frame);
                 Mat gray = new Mat();
-                canvas.showImage(frame);
+                
+                if(mat == null)continue;
 
+        
+        
+                opencv_imgproc.cvtColor(mat, gray, opencv_imgproc.COLOR_BGR2GRAY);
 
-                //int rows = gray.rows();
-                //int cols = gray.cols();
-//
-                //opencv_imgproc.cvtColor(mat, gray, opencv_imgproc.COLOR_BGR2GRAY);
-//
-                //
-//
-                //RealMatrix matrix = to_RealMatrix(mat, rows, cols);
-                //SVD(matrix, U, S, V);
-                //compressedFrame = joinMat(U, S, V, k, gray.type());
-//
-                //canvas.showImage(converter.convert(compressedFrame));
+                int rows = gray.rows();
+                int cols = gray.cols();
+                
+                RealMatrix matrix = to_RealMatrix(mat, rows, cols);
+                SingularValueDecomposition svd = new SingularValueDecomposition(matrix);
+                U = svd.getU();
+                S = svd.getS();
+                V = svd.getV();
+
+                compressedFrame = joinMat(U, S, V, k, gray.type());
+                
+
+                Mat coloredFrame = new Mat();
+                opencv_imgproc.cvtColor(compressedFrame, coloredFrame, opencv_imgproc.COLOR_GRAY2BGR);
+                Frame processedFrame = converter.convert(coloredFrame);
+                recorder.record(processedFrame);
+
             }
 
             grabber.stop();
-            canvas.dispose();
+            recorder.stop();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,20 +145,6 @@ public class VideoSVD {
         return MatrixUtils.createRealMatrix(data);
     }
 
-    /**
-     * 
-     * @param frame the frame bieng processed at the moment
-     * 
-     * @param U     Variables to pass by refference the result
-     * @param S     Variables to pass by refference the result
-     * @param V     Variables to pass by refference the result
-     */
-    private static void SVD(RealMatrix frame, RealMatrix U, RealMatrix S, RealMatrix V) {
-
-        SingularValueDecomposition svd = new SingularValueDecomposition(frame);
-        U = svd.getU();
-        S = svd.getS();
-        V = svd.getV();
-    }
+    
 
 }

@@ -22,7 +22,7 @@ public class App {
 
     public static void main(final String[] args) {
 
-        VideoSVD.compress("/home/lolineko/Downloads/prueba.mp4", -1);
+        VideoSVD.compress("/home/lolineko/Downloads/prueba.mp4","/home/lolineko/Downloads/pruebapp.mp4", 50);
 
         Undertow server = Undertow.builder().addHttpListener(8080, "localhost")
                 .setHandler(new HttpHandler() {
