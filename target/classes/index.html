@@ -1,86 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video Upload Form</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        max-width: 600px;
-        margin: 50px auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-    }
-    h1 {
-        text-align: center;
-    }
-    .form-group {
-        margin-bottom: 20px;
-    }
-    label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-    input[type="file"] {
-        display: block;
-    }
-    button[type="submit"] {
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    button[type="submit"]:hover {
-        background-color: #45a049;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Upload Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="file"] {
+            display: block;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>Upload Video</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="videoFile">Select Video File:</label>
-            <input type="file" id="videoFile" name="videoFile" accept="video/mp4">
-        </div>
-        <button type="submit">Upload</button>
-    </form>
-    <div id="status"></div>
-</div>
+    <div class="container">
+        <h1>Upload Video</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="videoFile">Select Video File:</label>
+                <input type="file" id="videoFile" name="videoFile" accept="video/mp4">
+            </div>
+            <button type="submit">Upload</button>
+        </form>
+        <div id="status"></div>
+    </div>
 
-<script>
-    document.getElementById('uploadForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        var form = event.target;
-        var formData = new FormData(form);
-        var xhr = new XMLHttpRequest();
+    <script>
 
-        xhr.open('POST', 'http://localhost:8080/upload', true);
-        xhr.onload = function() {
-            if (xhr.status == 200) {
-                document.getElementById('status').innerHTML = 'Upload successful';
-            } else {
-                document.getElementById('status').innerHTML = 'Upload failed: ' + xhr.statusText;
-            }
-        };
-        xhr.onerror = function() {
-            document.getElementById('status').innerHTML = 'Upload failed: ' + xhr.statusText;
-        };
-        xhr.send(formData);
-    });
-</script>
+        document.getElementById('uploadForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.text())
+                .then(data => {
+                    document.getElementById('status').innerHTML = data;   
+                    console.log(data)
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+    
+
+
+    </script>
 
 </body>
+
 </html>

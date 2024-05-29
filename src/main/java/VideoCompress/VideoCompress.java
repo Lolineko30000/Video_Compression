@@ -17,11 +17,10 @@ import ImageCompression.BTreeTriangularCoding;
 
 public class VideoCompress {
 
-    public static void compressVideo(String inputFilePath, String outputFilePath, int triangleSize)
-            throws IOException, JCodecException {
+    public static void compressVideo(String inputFilePath, String outputFilePath, int triangleSize)throws IOException, JCodecException {
 
         SeekableByteChannel out = NIOUtils.writableFileChannel(outputFilePath);
-        ;
+        
 
         File inputFile = new File(inputFilePath);
         FrameGrab frameGrab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(inputFile));
@@ -43,10 +42,13 @@ public class VideoCompress {
             BTreeTriangularCoding bTreeCoding = new BTreeTriangularCoding(frame, triangleSize);
             bTreeCoding.compress();
             BufferedImage compressedFrame = bTreeCoding.decompress();
+            
+            
             encoder.encodeImage(compressedFrame);
             
         }
 
         encoder.finish();
+
     }
 }

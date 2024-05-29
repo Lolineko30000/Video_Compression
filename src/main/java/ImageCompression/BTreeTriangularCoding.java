@@ -19,13 +19,19 @@ public class BTreeTriangularCoding {
         if (triangleSize <= 0 || triangleSize > Math.min(image.getWidth(), image.getHeight())) {
             throw new IllegalArgumentException("Invalid triangle size");
         }
-        
         this.triangleSize = triangleSize;
     }
 
 
     public void compress() {
         root = constructBTree(0, 0, image.getWidth(), image.getHeight(), true);
+    }
+
+
+    public BufferedImage decompress() {
+        BufferedImage decompressedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        reconstructImage(decompressedImage, root, 0, 0, decompressedImage.getWidth(), decompressedImage.getHeight(), true);
+        return decompressedImage;
     }
 
 
@@ -70,17 +76,11 @@ public class BTreeTriangularCoding {
         }
     }
 
-    
-
-    public BufferedImage decompress() {
-        BufferedImage decompressedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        reconstructImage(decompressedImage, root, 0, 0, decompressedImage.getWidth(), decompressedImage.getHeight(), true);
-        return decompressedImage;
-    }
 
 
 
     private void reconstructImage(BufferedImage image, BTreeNode node, int x, int y, int width, int height, boolean isLeft) {
+        
         if (node.leftChild == null && node.rightChild == null) {
             Color color = node.averageColor;
 
@@ -91,6 +91,7 @@ public class BTreeTriangularCoding {
                     }
                 }
             }
+            
         } else {
             int halfWidth = width / 2;
             int halfHeight = height / 2;
