@@ -1,2 +1,4 @@
 /home/lolineko/Documents/ConcurrenteXD/src/main/java/App.java
-/home/lolineko/Documents/ConcurrenteXD/src/main/java/VideoCompression/VideoSVD.java
+/home/lolineko/Documents/ConcurrenteXD/src/main/java/VideoCompress/VideoCompress.java
+/home/lolineko/Documents/ConcurrenteXD/src/main/java/ImageCompression/BTreeNode.java
+/home/lolineko/Documents/ConcurrenteXD/src/main/java/ImageCompression/BTreeTriangularCoding.java

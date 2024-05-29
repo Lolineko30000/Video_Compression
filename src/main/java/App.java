@@ -3,74 +3,95 @@ import io.undertow.UndertowOptions;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
+import io.undertow.Handlers;
+import io.undertow.server.handlers.form.FormData;
+import io.undertow.server.handlers.form.FormDataParser;
+import org.jcodec.api.JCodecException;
 
-import java.io.IOException;
+
 import java.io.InputStream;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import org.opencv.video.Video;
-
-import VideoCompression.VideoSVD;
-
-
+import VideoCompress.VideoCompress;
 
 public class App {
 
     private static final String HTML_FILE_PATH = "index.html";
-    private static final String JS_FILE_PATH = "js/messages.js";
-    private static final String CSS_FILE_PATH = "css/styles.css";
 
     public static void main(final String[] args) {
 
-        VideoSVD.compress("/home/lolineko/Downloads/prueba.mp4","/home/lolineko/Downloads/pruebapp.mp4", 50);
-
-        Undertow server = Undertow.builder().addHttpListener(8080, "localhost")
+        Undertow server = Undertow.builder()
+                .addHttpListener(8080, "localhost")
                 .setHandler(new HttpHandler() {
-
                     @Override
                     public void handleRequest(HttpServerExchange exchange) throws Exception {
-
-                        String key = exchange.getQueryParameters().get("key") != null
-                                ? exchange.getQueryParameters().get("key").getFirst()
-                                : null;
-                        String requestPath = exchange.getRequestPath();
-
-                        if (requestPath.startsWith("/css/")) {
-
-                            String htmlContent = readHtmlFile(CSS_FILE_PATH);
-                            exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
-                            exchange.getResponseSender().send(htmlContent);
-                        } else if (requestPath.startsWith("/js/")) {
-                            String htmlContent = readHtmlFile(JS_FILE_PATH);
-                            exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
-                            exchange.getResponseSender().send(htmlContent);
+                        if (exchange.getRequestMethod().equalToString("POST") &&
+                                exchange.getRequestPath().equals("/upload")) {
+                            handleUpload(exchange);
                         } else {
-
-                            if (key != null) {
-
-
-                                exchange.startBlocking();
-                                String responseMessage = "wajaka forever";
-                                exchange.getResponseSender().send(responseMessage);
-
-
-
-
-
-                            } else {
-                                String htmlContent = readHtmlFile(HTML_FILE_PATH);
-                                exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
-                                exchange.getResponseSender().send(htmlContent);
-                            }
+                            sendHtmlPage(exchange);
                         }
                     }
-
-                }).setServerOption(UndertowOptions.MAX_HEADER_SIZE, 900_000).build();
+                })
+                .setServerOption(UndertowOptions.MAX_HEADER_SIZE, 900_000)
+                .build();
 
         server.start();
     }
 
-    private static String readHtmlFile(String file) {
+    private static void handleUpload(HttpServerExchange exchange) throws IOException {
+        FormDataParser parser = exchange.getAttachment(FormDataParser.ATTACHMENT_KEY);
+        if (parser == null) {
+            
+            exchange.getResponseSender().send("Bad Request: No form data found");
+            return;
+        }
+
+        parser.parse(formData -> {
+            FormData.FormValue file = formData.getFirst("videoFile");
+            if (file != null && file.isFile()) {
+                try {
+                    File uploadedFile = saveUploadedFile(file);
+                    String inputFilePath = uploadedFile.getAbsolutePath();
+                    String outputFilePath = "processed_video.mp4"; // Output path for processed video
+                    int triangleSize = 1; // Adjust triangle size as needed
+                    long startTime = System.currentTimeMillis();
+                    VideoCompress.compressVideo(inputFilePath, outputFilePath, triangleSize);
+                    long endTime = System.currentTimeMillis();
+                    long processingTime = endTime - startTime;
+                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+                    exchange.getResponseSender().send("Video processing completed in " + processingTime + " milliseconds");
+                } catch (IOException | JCodecException e) {
+                    e.printStackTrace();
+                    
+                    exchange.getResponseSender().send("Internal Server Error");
+                }
+            } else {
+                
+                exchange.getResponseSender().send("No file uploaded");
+            }
+        });
+    }
+
+    private static void sendHtmlPage(HttpServerExchange exchange) throws IOException {
+        String htmlContent = readFile(HTML_FILE_PATH);
+        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
+        exchange.getResponseSender().send(htmlContent);
+    }
+
+    private static File saveUploadedFile(FormData.FormValue file) throws IOException {
+        File outputFile = File.createTempFile("uploaded_video", ".mp4");
+        try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
+            file.getFileItem().write(outputStream);
+        }
+        return outputFile;
+    }
+
+
+    private static String readFile(String file) {
         try (InputStream inputStream = App.class.getClassLoader().getResourceAsStream(file)) {
             if (inputStream != null) {
                 try (Scanner scanner = new Scanner(inputStream, "UTF-8").useDelimiter("\\A")) {
@@ -84,6 +105,13 @@ public class App {
             e.printStackTrace();
             return "Error leyendo archivo HTML principal: debe estar en src\\resources\\html";
         }
-    } // Request send
-
+    }
+    
+    
 }
+
+
+
+
+
+
