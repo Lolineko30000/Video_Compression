@@ -1,4 +1,8 @@
-/home/lolineko/Documents/ConcurrenteXD/src/main/java/App.java
-/home/lolineko/Documents/ConcurrenteXD/src/main/java/VideoCompress/VideoCompress.java
-/home/lolineko/Documents/ConcurrenteXD/src/main/java/ImageCompression/BTreeNode.java
-/home/lolineko/Documents/ConcurrenteXD/src/main/java/ImageCompression/BTreeTriangularCoding.java
+/home/sebiche/Documents/Universidad/MAC/Concurrente/ConcurrenteXD/src/main/java/ImageCompression/BTreeNode.java
+/home/sebiche/Documents/Universidad/MAC/Concurrente/ConcurrenteXD/src/main/java/CompressionSaul/BTree.java
+/home/sebiche/Documents/Universidad/MAC/Concurrente/ConcurrenteXD/src/main/java/CompressionSaul/Decompressor.java
+/home/sebiche/Documents/Universidad/MAC/Concurrente/ConcurrenteXD/src/main/java/CompressionSaul/BTreeNode.java
+/home/sebiche/Documents/Universidad/MAC/Concurrente/ConcurrenteXD/src/main/java/CompressionSaul/Compressor.java
+/home/sebiche/Documents/Universidad/MAC/Concurrente/ConcurrenteXD/src/main/java/App.java
+/home/sebiche/Documents/Universidad/MAC/Concurrente/ConcurrenteXD/src/main/java/ImageCompression/BTreeTriangularCoding.java
+/home/sebiche/Documents/Universidad/MAC/Concurrente/ConcurrenteXD/src/main/java/VideoCompress/VideoCompress.java
