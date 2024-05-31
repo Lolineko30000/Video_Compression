@@ -2,21 +2,22 @@ package VideoCompress;
 
 import org.jcodec.api.FrameGrab;
 import org.jcodec.api.JCodecException;
+import org.jcodec.api.PictureWithMetadata;
 import org.jcodec.common.io.NIOUtils;
-import org.jcodec.common.model.Picture;
-import org.jcodec.scale.AWTUtil;
+
+import BTree.BTree;
+import SecuentialCompression.Compressor;
+import SecuentialCompression.Decompressor;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.jcodec.common.io.SeekableByteChannel;
 import org.jcodec.api.awt.AWTSequenceEncoder;
 import org.jcodec.common.model.Rational;
-
-import CompressionSaul.BTree;
-// import ImageCompression.BTreeTriangularCoding;
-import CompressionSaul.Compressor;
-import CompressionSaul.Decompressor;
 
 
 public class VideoCompress {
@@ -26,8 +27,6 @@ public class VideoCompress {
 
         SeekableByteChannel out = NIOUtils.writableFileChannel(outputFilePath);
         
-        System.out.println(inputFilePath);
-
         File inputFile = new File(inputFilePath);
         FrameGrab frameGrab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(inputFile));
         
@@ -42,20 +41,28 @@ public class VideoCompress {
         AWTSequenceEncoder encoder = new AWTSequenceEncoder(out, frameRate);
 
 
+        PictureWithMetadata picture;
+        ArrayList<SortedImage> frames = new ArrayList<SortedImage>();
+        
+        System.out.println("Reading video...");
+        while ((picture = frameGrab.getNativeFrameWithMetadata()) != null) {
+            
+            frames.add(new SortedImage(picture));
+            
+        }
+
+        Collections.sort(frames);
+            
         System.out.println("Processing video...");
         int fps = (int)frameRate.toDouble();
-        int i = 0;
 
-        Picture picture;
-        while ((picture = frameGrab.getNativeFrame()) != null) {
-            
-            i++;
+        for( int i = 0; i< frames.size(); i++){
             if(i%fps==0){
                 System.out.print(i/fps);
                 System.out.println(" seconds proccesed");
             }
 
-            BufferedImage frame = AWTUtil.toBufferedImage(picture);
+            BufferedImage frame = frames.get(i).data;
 
             Compressor compressor = new Compressor(frame);
             BTree compressed = compressor.compress();
@@ -64,7 +71,6 @@ public class VideoCompress {
             BufferedImage compressedFrame = decompressor.decompress();
 
             encoder.encodeImage(compressedFrame);
-            
         }
         
         encoder.finish();

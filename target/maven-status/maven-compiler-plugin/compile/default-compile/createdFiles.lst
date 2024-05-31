@@ -1,9 +1,9 @@
-CompressionSaul/Decompressor.class
 VideoCompress/VideoCompress.class
 CompressionSaul/BTreeNode.class
 App.class
 ImageCompression/BTreeTriangularCoding.class
 ImageCompression/BTreeNode.class
+CompressionSaul/Compressor.class
+CompressionSaul/Decompressor.class
 App$1.class
 CompressionSaul/BTree.class
-CompressionSaul/Compressor.class
