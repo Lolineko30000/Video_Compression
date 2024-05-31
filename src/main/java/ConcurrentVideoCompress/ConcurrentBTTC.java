@@ -19,13 +19,13 @@ public class ConcurrentBTTC extends Thread{
     }
 
     public void run(){
-        System.out.println("Hilo " + name + " comienza");
+        
         Compressor compressor = new Compressor(frame);
         BTree compressed = compressor.compress();
 
         Decompressor decompressor = new Decompressor(compressed, frame.getWidth(), frame.getHeight());
         compressedFrame = decompressor.decompress();
-        System.out.println("Hilo " + name + " termina");
+        
     }
 
     public BufferedImage getFrame(){

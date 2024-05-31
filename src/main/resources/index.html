@@ -8,21 +8,28 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            max-width: 400px;
+            width: 100%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
+            color: #333;
+            margin-bottom: 20px;
         }
 
         .form-group {
@@ -33,43 +40,61 @@
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
+            color: #333;
         }
 
-        input[type="file"] {
-            display: block;
+        input[type="file"],
+        input[type="checkbox"] {
+            margin-bottom: 10px;
+        }
+
+        .checkbox-label {
+            font-weight: normal;
         }
 
         button[type="submit"] {
-            padding: 10px 20px;
+            width: 100%;
+            padding: 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
 
         button[type="submit"]:hover {
             background-color: #45a049;
         }
+
+        #status {
+            margin-top: 20px;
+            text-align: center;
+            color: #333;
+        }
     </style>
 </head>
 
 <body>
-
     <div class="container">
         <h1>Upload Video</h1>
-        <form id="uploadForm" enctype="multipart/form-data">
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="videoFile">Select Video File:</label>
-                <input type="file" id="videoFile" name="videoFile" accept="video/mp4">
+                <label for="videoFile">Select Video File</label>
+                <input type="file" id="videoFile" name="videoFile" required>
+            </div>
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="parallelProcessing"> Use Parallel Processing
+                </label>
             </div>
             <button type="submit">Upload</button>
         </form>
-        <div id="status"></div>
+        <p id="status"></p>
     </div>
 
     <script>
-
         document.getElementById('uploadForm').addEventListener('submit', function (event) {
             event.preventDefault();
             const formData = new FormData(this);
@@ -78,34 +103,30 @@
                 method: 'POST',
                 body: formData
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = 'processed_video.mp4';  // The filename for the downloaded file
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.getElementById('status').innerHTML = 'Video processed and ready for download.';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('status').innerHTML = 'Error processing video.';
-                });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const processingTime = response.headers.get('X-Processing-Time');
+                return response.blob().then(blob => ({ blob, processingTime }));
+            })
+            .then(({ blob, processingTime }) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'processed_video.mp4';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.getElementById('status').innerHTML = `Video processed and ready for download. Processing time: ${processingTime} ms`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('status').innerHTML = 'Error processing video.';
+            });
         });
-
-
-
-
     </script>
-
 </body>
 
 </html>
