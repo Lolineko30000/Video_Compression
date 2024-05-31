@@ -20,6 +20,7 @@ public class Decompressor {
     public BufferedImage decompress(){
         ArrayList<BTreeNode> nodes = compressed.nodes;
         int size = nodes.size();
+        // System.out.println(size);
         for(int i=0; i< size; i++){
             fillTriangle(nodes.get(i));
         }
@@ -37,7 +38,7 @@ public class Decompressor {
         int y_min = min(T.y1, T.y2, T.y3);
         int y_max = max(T.y1, T.y2, T.y3);
         
-        float denominator = (T.x2-T.x1)*(T.y3-T.y1) - (T.y2-T.y1)*(T.x3-T.x1);
+        double denominator = (T.x2-T.x1)*(T.y3-T.y1) - (T.y2-T.y1)*(T.x3-T.x1);
 
         for(int x = x_min; x < x_max; x++){
             for(int y = y_min; y < y_max; y++){
@@ -49,13 +50,14 @@ public class Decompressor {
         }
     }
 
-    private Color G(int x, int y, Color c1, Color c2, Color c3, BTreeNode T, float denominator){
-        float alpha = ((x-T.x1)*(T.y3-T.y1)-(y-T.y1)*(T.x3-T.x1))/denominator;
-        float beta = ((T.x2-T.x1)*(y-T.y1)-(T.y2-T.y1)*(x-T.x1))/denominator;
+    private Color G(int x, int y, Color c1, Color c2, Color c3, BTreeNode T, double denominator){
+        double alpha = ((x-T.x1)*(T.y3-T.y1)-(y-T.y1)*(T.x3-T.x1))/denominator;
+        double beta = ((T.x2-T.x1)*(y-T.y1)-(T.y2-T.y1)*(x-T.x1))/denominator;
 
-        float R = c1.getRed() + alpha*(c2.getRed() - c1.getRed()) + beta*(c3.getRed() - c1.getRed());
-        float G = c1.getGreen() + alpha*(c2.getGreen() - c1.getGreen()) + beta*(c3.getGreen() - c1.getGreen());
-        float B = c1.getBlue() + alpha*(c2.getBlue() - c1.getBlue()) + beta*(c3.getBlue() - c1.getBlue());
+        int R = (int)(c1.getRed() + alpha*(c2.getRed() - c1.getRed()) + beta*(c3.getRed() - c1.getRed()));
+        int G = (int)(c1.getGreen() + alpha*(c2.getGreen() - c1.getGreen()) + beta*(c3.getGreen() - c1.getGreen()));
+        int B = (int)(c1.getBlue() + alpha*(c2.getBlue() - c1.getBlue()) + beta*(c3.getBlue() - c1.getBlue()));
+        
         return new Color(R, G, B);
     }
 

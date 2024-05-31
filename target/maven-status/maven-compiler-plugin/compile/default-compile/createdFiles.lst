@@ -3,7 +3,7 @@ VideoCompress/VideoCompress.class
 CompressionSaul/BTreeNode.class
 App.class
 ImageCompression/BTreeTriangularCoding.class
+ImageCompression/BTreeNode.class
 App$1.class
 CompressionSaul/BTree.class
-ImageCompression/BTreeNode.class
 CompressionSaul/Compressor.class
