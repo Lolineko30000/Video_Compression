@@ -8,6 +8,9 @@ import io.undertow.server.handlers.form.FormData;
 import io.undertow.server.handlers.form.FormDataParser;
 import io.undertow.server.handlers.form.FormParserFactory;
 import org.jcodec.api.JCodecException;
+
+import ConcurrentVideoCompress.ConcurrentVideoCompress;
+import SecuentialVideoCompress.VideoCompress;
 import io.undertow.server.handlers.form.MultiPartParserDefinition;
 
 import org.apache.commons.io.IOUtils;
@@ -21,7 +24,6 @@ import java.nio.file.Path;
 
 import java.io.InputStream;
 import java.util.Scanner;
-import VideoCompress.VideoCompress;
 
 public class App {
 
@@ -74,11 +76,21 @@ public class App {
                 String inputFilePath = uploadedFile.getAbsolutePath();
                 String outputFilePath = "processed_video.mp4";
                 int triangleSize = 1;
+
+                System.out.println("Secuential");
                 long startTime = System.currentTimeMillis();
                 VideoCompress.compressVideo(inputFilePath, outputFilePath, triangleSize);
                 long endTime = System.currentTimeMillis();
                 long processingTime = endTime - startTime;
+                System.err.println(processingTime);
                 File processedFile = new File("processed_video.mp4");
+
+                System.out.println("Concurrent");
+                startTime = System.currentTimeMillis();
+                ConcurrentVideoCompress.compressVideo(inputFilePath, outputFilePath, triangleSize);
+                endTime = System.currentTimeMillis();
+                long ConcurrentProcessingTime = endTime - startTime;
+                System.out.println(ConcurrentProcessingTime);
 
 
                 exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
