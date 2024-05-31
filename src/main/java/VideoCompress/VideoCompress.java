@@ -32,10 +32,10 @@ public class VideoCompress {
         File inputFile = new File(inputFilePath);
         FrameGrab frameGrab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(inputFile));
         
-        System.out.println("2222222222222");
+        
         double totalFrames = frameGrab.getVideoTrack().getMeta().getTotalFrames();
         double totalDuration = frameGrab.getVideoTrack().getMeta().getTotalDuration();
-        System.out.println(".3333333333333333");
+        
 
         Rational frameRate = totalFrames != 0
                 ? Rational.R((int) totalFrames,(int)totalDuration)
@@ -44,11 +44,12 @@ public class VideoCompress {
 
         AWTSequenceEncoder encoder = new AWTSequenceEncoder(out, frameRate);
 
-
+        
         Picture picture;
         while ((picture = frameGrab.getNativeFrame()) != null) {
             
             BufferedImage frame = AWTUtil.toBufferedImage(picture);
+            
 
             // CAMBIAR
             // BTreeTriangularCoding bTreeCoding = new BTreeTriangularCoding(frame, triangleSize);

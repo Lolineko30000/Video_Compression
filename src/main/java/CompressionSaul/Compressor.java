@@ -41,8 +41,8 @@ public class Compressor {
         int height = this.image.getHeight();
 
         // 1. Initialize the first two PRATS
-        BTreeNode T1 = new BTreeNode(0, 0, 0, width, height, 0);
-        BTreeNode T2 = new BTreeNode(width, height, 0, width, height, 0);
+        BTreeNode T1 = new BTreeNode(0, 0, 0, height-1, width-1, 0);
+        BTreeNode T2 = new BTreeNode(width-1, height-1, 0, height-1, width-1, 0);
 
         // 2. Push T1 and T2 into the stack
         stack.push(T1);
@@ -63,8 +63,8 @@ public class Compressor {
                     // 5. Divide T into two parts
                     int x1 = (T.x2 + T.x3) / 2;
                     int y1 = (T.y2 + T.y3) / 2;
-                    T1 = new BTreeNode(x1, y1, T.x1, T.y1, T.x2, T.x2);
-                    T2 = new BTreeNode(x1, y1, T.x3, T.y3, T.x1, T.x1);
+                    T1 = new BTreeNode(x1, y1, T.x1, T.y1, T.x2, T.y2);
+                    T2 = new BTreeNode(x1, y1, T.x3, T.y3, T.x1, T.y1);
 
                     // Go to Step 2
                     stack.push(T1);
@@ -76,6 +76,7 @@ public class Compressor {
     }
 
     private float calculateError(BTreeNode T){
+
 
         Color c1 = new Color(image.getRGB(T.x1, T.y1));
         Color c2 = new Color(image.getRGB(T.x2, T.y2));
@@ -107,6 +108,13 @@ public class Compressor {
         float R = c1.getRed() + alpha*(c2.getRed() - c1.getRed()) + beta*(c3.getRed() - c1.getRed());
         float G = c1.getGreen() + alpha*(c2.getGreen() - c1.getGreen()) + beta*(c3.getGreen() - c1.getGreen());
         float B = c1.getBlue() + alpha*(c2.getBlue() - c1.getBlue()) + beta*(c3.getBlue() - c1.getBlue());
+        
+        System.out.println("============================");
+        System.out.println(R);
+        System.out.println(G);
+        System.out.println(B);
+        System.out.println("============================");
+
         return new Color(R, G, B);
     }
 
