@@ -77,15 +77,31 @@
             fetch('/upload', {
                 method: 'POST',
                 body: formData
-            }).then(response => response.text())
-                .then(data => {
-                    document.getElementById('status').innerHTML = data;   
-                    console.log(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.blob();
                 })
-                .catch(error => console.error('Error:', error));
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'processed_video.mp4';  // The filename for the downloaded file
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.getElementById('status').innerHTML = 'Video processed and ready for download.';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('status').innerHTML = 'Error processing video.';
+                });
         });
 
-    
+
 
 
     </script>

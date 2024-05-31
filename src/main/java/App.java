@@ -1,4 +1,5 @@
 import io.undertow.Undertow;
+import io.undertow.io.IoCallback;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.AttachmentKey;
@@ -9,10 +10,10 @@ import io.undertow.server.handlers.form.FormParserFactory;
 import org.jcodec.api.JCodecException;
 import io.undertow.server.handlers.form.MultiPartParserDefinition;
 
-
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -77,9 +78,37 @@ public class App {
                 VideoCompress.compressVideo(inputFilePath, outputFilePath, triangleSize);
                 long endTime = System.currentTimeMillis();
                 long processingTime = endTime - startTime;
+                File processedFile = new File("processed_video.mp4");
+
 
                 exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                exchange.getResponseSender().send("Video processing completed in " + processingTime + " milliseconds");
+                //exchange.getResponseSender().send("Video processing completed in " + processingTime + " milliseconds");
+
+                exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "video/mp4");
+                exchange.getResponseHeaders().put(Headers.CONTENT_DISPOSITION,
+                        "attachment; filename=\"processed_video.mp4\"");
+                exchange.getResponseHeaders().put(Headers.TRANSFER_ENCODING, "chunked");
+                exchange.getResponseHeaders().put(Headers.CONTENT_LENGTH, processedFile.length());
+
+                try (FileInputStream fileInputStream = new FileInputStream(processedFile)) {
+                    exchange.getResponseSender().transferFrom(fileInputStream.getChannel(), new IoCallback() {
+                        @Override
+                        public void onComplete(HttpServerExchange exchange, io.undertow.io.Sender sender) {
+                    
+                            System.out.println("Video processing completed in " + processingTime + " milliseconds");
+                        }
+                        @Override
+                        public void onException(HttpServerExchange exchange, io.undertow.io.Sender sender,
+                                IOException exception) {
+                            exception.printStackTrace();
+                            exchange.setStatusCode(500);
+                            exchange.getResponseSender().send("Internal Server Error: " + exception.getMessage());
+                        }
+                    });
+                }
+
+                // Optional: log or send the processing time
+                System.out.println("Video processing completed in " + processingTime + " milliseconds");
             } else {
                 exchange.getResponseSender().send("No file uploaded");
             }
@@ -89,15 +118,14 @@ public class App {
         }
     }
 
-    
     private static File saveUploadedFile(FormData.FormValue fileValue) throws IOException {
         Path tempFile = Files.createTempFile("uploaded-", ".mp4");
 
         try (FileOutputStream fos = new FileOutputStream(tempFile.toFile())) {
             IOUtils.copy(fileValue.getFileItem().getInputStream(), fos);
         }
-        return tempFile.toFile(); 
-    } 
+        return tempFile.toFile();
+    }
 
     private static void sendHtmlPage(HttpServerExchange exchange) throws IOException {
         String htmlContent = readFile(HTML_FILE_PATH);
