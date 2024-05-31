@@ -23,7 +23,6 @@ public class VideoCompress {
 
     public static void compressVideo(String inputFilePath, String outputFilePath, int triangleSize)throws IOException, JCodecException {
         
-        System.out.println("Entra Compress video");
 
         SeekableByteChannel out = NIOUtils.writableFileChannel(outputFilePath);
         
@@ -32,10 +31,8 @@ public class VideoCompress {
         File inputFile = new File(inputFilePath);
         FrameGrab frameGrab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(inputFile));
         
-        System.out.println("2222222222222");
         double totalFrames = frameGrab.getVideoTrack().getMeta().getTotalFrames();
         double totalDuration = frameGrab.getVideoTrack().getMeta().getTotalDuration();
-        System.out.println(".3333333333333333");
 
         Rational frameRate = totalFrames != 0
                 ? Rational.R((int) totalFrames,(int)totalDuration)
@@ -45,34 +42,33 @@ public class VideoCompress {
         AWTSequenceEncoder encoder = new AWTSequenceEncoder(out, frameRate);
 
 
+        System.out.println("Processing video...");
+        int fps = (int)frameRate.toDouble();
+        int i = 0;
+
         Picture picture;
         while ((picture = frameGrab.getNativeFrame()) != null) {
             
+            i++;
+            if(i%fps==0){
+                System.out.print(i/fps);
+                System.out.println(" seconds proccesed");
+            }
+
             BufferedImage frame = AWTUtil.toBufferedImage(picture);
 
-            // CAMBIAR
-            // BTreeTriangularCoding bTreeCoding = new BTreeTriangularCoding(frame, triangleSize);
-            // bTreeCoding.compress();
-            // BufferedImage compressedFrame = bTreeCoding.decompress();
-            System.out.println("Comprimiendo...");
             Compressor compressor = new Compressor(frame);
             BTree compressed = compressor.compress();
-            System.out.println("Archivo comprimido correctamente");
-            System.out.println(compressed.nodes);
 
-            System.out.println("Descomprimiendo");
             Decompressor decompressor = new Decompressor(compressed, frame.getWidth(), frame.getHeight());
             BufferedImage compressedFrame = decompressor.decompress();
-            System.out.println("Archivo descomprimido");
 
-            
             encoder.encodeImage(compressedFrame);
-            System.out.println("Image encoded");
-
             
         }
-
+        
         encoder.finish();
+        System.out.println("Video encoded");
 
     }
 }
