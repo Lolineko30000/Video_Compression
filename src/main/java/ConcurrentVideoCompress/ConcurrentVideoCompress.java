@@ -63,6 +63,7 @@ public class ConcurrentVideoCompress {
 
         for( int i = 0; i < workerThreads; i += 100){
             int stop = i+100;
+            System.out.println((100*i/workerThreads) + "% completado");
             if(stop>workerThreads){
                 stop = workerThreads;
             }

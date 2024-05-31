@@ -5,6 +5,7 @@ import java.awt.Color;
 public class BTreeNode {
     public int x1, x2, x3, y1, y2, y3;
     public Color c1, c2, c3;
+    public double ERROR = 1.0;
 
     public BTreeNode(int x1, int y1, int x2, int y2, int x3, int y3) {
         this.x1 = x1;
@@ -35,7 +36,9 @@ public class BTreeNode {
         double A3 = area(x1, y1, x2, y2, x, y);
 
         /* Check if sum of A1, A2 and A3 is same as A */
-        return (A == A1 + A2 + A3);
+
+        double difference = Math.abs(A-A1-A2-A3);
+        return (difference < ERROR);
     }
 
     public void setColors(Color c1, Color c2, Color c3) {

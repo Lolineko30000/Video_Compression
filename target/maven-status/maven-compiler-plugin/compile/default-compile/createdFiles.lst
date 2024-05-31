@@ -5,7 +5,7 @@ App$2.class
 BTTC/Decompressor.class
 SecuentialVideoCompress/VideoCompress.class
 App$1.class
-ConcurrentVideoCompress/ConcurrentVideoCompress.class
 BTree/BTreeNode.class
-BTree/BTree.class
+ConcurrentVideoCompress/ConcurrentVideoCompress.class
 BTTC/Compressor.class
+BTree/BTree.class

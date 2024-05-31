@@ -82,20 +82,21 @@ public class App {
 
                 long startTime = System.currentTimeMillis();
                 if (useParallel) {
+                    System.out.println("======================================");
                     System.out.println("Concurrent");
                     ConcurrentVideoCompress.compressVideo(inputFilePath, outputFilePath, triangleSize);
                 } else {
-
+                    System.out.println("======================================");
                     System.out.println("Secuential");
                     VideoCompress.compressVideo(inputFilePath, outputFilePath, triangleSize);
                 }
                 long endTime = System.currentTimeMillis();
                 long processingTime = endTime - startTime;
-                System.err.println(processingTime);
+                // System.err.println(processingTime);
                 File processedFile = new File("processed_video.mp4");
 
-                long ConcurrentProcessingTime = endTime - startTime;
-                System.out.println(ConcurrentProcessingTime);
+                // long ConcurrentProcessingTime = endTime - startTime;
+                // System.out.println(ConcurrentProcessingTime);
 
                 exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
 
