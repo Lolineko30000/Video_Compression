@@ -7,7 +7,7 @@
 ## Facultad de Estudios Superiores Acatlán 
 
 
-<img src="./FESAc.png" alt="drawing" width="300"/>
+<img src="./img/FESAc.png" alt="drawing" width="300"/>
 
 
 ## Licenciatura en Matematicas aplicadas y computacion
@@ -26,9 +26,9 @@
 
 
 As we know, a viode can be tought as a series of 
-    ordered images, called frames. This we can compress each of this images in order to compress
-    the full video. In this particular case we are implementiong the B-Tree Triangular Coding for 
-    each frame.
+ordered images, called frames. This we can compress each of this images in order to compress
+the full video. In this particular case we are implementiong the B-Tree Triangular Coding for 
+each frame.
 
 ### Mathematical Model
 
@@ -87,7 +87,7 @@ This mathematical model ensures efficient image compression by leveraging the pr
 It can be seen as smoothing out a $3D$ shape.
 
 
-<img src="./example.jpeg" alt="drawing" width="300"/>
+<img src="./img/example.jpeg" alt="drawing" width="500"/>
 
 
 
@@ -98,8 +98,11 @@ computing we decided to make batches of frames,
 and process every frame in the batch concurently, 
 since a video of just some seconds consists of 
 tousands of frames, it is the best parallel 
-computing model. Furthermore 
+computing model. Furthermore the criical area is reduced 
+to only the frame order.
 
+
+<img src="./img/paralleldiagram.png" alt="drawing" width="500"/>
 
 
 ### Executing the program (ONLY FOR LINUX)
@@ -127,4 +130,21 @@ If we do not have any errors, we can go to or browser and type the next directio
 > http://localhost:8080/
 
 Where the algorithm should be running
+
+
+
+### Advantages of parallel computing
+
+
+For short videos (around 6 seconds) the parallel algorithm, tends to 
+be worse than the seciential, however when we pass the 20 seconds we can even see an improvement in performance.
+
+
+#### Parallel
+<img src="./img/sec.png" alt="drawing" width="500"/>
+
+
+#### Secuential
+<img src="./img/par.png" alt="drawing" width="500"/>
+
 
