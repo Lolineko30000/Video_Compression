@@ -7,8 +7,7 @@
 ## Facultad de Estudios Superiores Acatlán 
 
 
-<img src="./img/FESAc.png" alt="drawing" width="300"/>
-
+![Alt text](./img/FESAc.png "Image")
 
 ## Licenciatura en Matematicas aplicadas y computacion
 
@@ -18,7 +17,7 @@
 #### Segura Díaz Angel Daniel
 #### Sevilla Gallardo Saúl Sebastián
 
-#### Profesor: Pablo Martínez Castro (MACAPPA)
+#### Profesor: Pablo Martínez Castro (MACKAPPA)
 
 ---------
 ---------
@@ -87,7 +86,7 @@ This mathematical model ensures efficient image compression by leveraging the pr
 It can be seen as smoothing out a $3D$ shape.
 
 
-<img src="./img/example.jpeg" alt="drawing" width="500"/>
+![Alt text](./img/example.jpeg "image")
 
 
 
@@ -102,7 +101,7 @@ computing model. Furthermore the criical area is reduced
 to only the frame order.
 
 
-<img src="./img/paralleldiagram.png" alt="drawing" width="500"/>
+![Alt text](./img/paralleldiagram.png "image")
 
 
 ### Executing the program (ONLY FOR LINUX)
@@ -141,10 +140,10 @@ be worse than the seciential, however when we pass the 20 seconds we can even se
 
 
 #### Parallel
-<img src="./img/sec.png" alt="drawing" width="500"/>
+![Alt text](./img/sec.png "image")
 
 
 #### Secuential
-<img src="./img/par.png" alt="drawing" width="500"/>
+![Alt text](./img/par.png "image")
 
 
