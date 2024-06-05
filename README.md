@@ -34,24 +34,24 @@ each frame.
 
 The B-Tree Triangular Coding (BTTC) algorithm utilizes a hierarchical decomposition of an image into triangular regions, leveraging the B-Tree structure to manage and encode these regions effectively. Below is a detailed explanation of the mathematical model underlying the BTTC algorithm.
 
-#### 1. **Triangular Decomposition**
+#### 1. Triangular Decomposition
 
 Given an image $ I $ with dimensions $ W \times H $, the initial step involves decomposing $ I $ into a set of right-angled triangles. Each triangle is defined by three vertices:
 $ T_i = \{(x_1, y_1), (x_2, y_2), (x_3, y_3)\} $
 
-#### 2. **Uniformity Testing**
+#### 2. Uniformity Testing
 
 For each triangular region $ T_i $, we test its uniformity. A triangle is considered uniform if the color of all its pixels is approximately the same. Mathematically, we can define a uniformity condition as:
 $ \forall (x, y) \in T_i, \ |C(x, y) - C(x_1, y_1)| \leq \epsilon $
 where $ C(x, y) $ is the color at pixel $ (x, y) $ and $ \epsilon $ is a predefined threshold.
 
-#### 3. **B-Tree Structure**
+#### 3. B-Tree Structure
 
 The B-Tree manages the hierarchical decomposition of triangles. Each node $ N $ in the B-Tree can be defined as:
 $ N = \{T_i, \{C_1, C_2, \ldots, C_n\}\} $
 where $ T_i $ is the triangular region and $ C_i $ are the child nodes representing further subdivisions of $ T_i $.
 
-#### 4. **Encoding Process**
+#### 4. Encoding Process
 
 The encoding process involves:
 - Starting with the initial triangle covering the entire image.
@@ -63,11 +63,11 @@ $ T_i \rightarrow \{T_{i1}, T_{i2}, T_{i3}\} $
 where $ T_{i1}, T_{i2}, T_{i3} $ are the new triangles formed by the subdivision.
 
 
-#### 5. **Decoding Process**
+#### 5. Decoding Process
 
 The decoding process reconstructs the image by traversing the B-Tree and filling in the triangular regions. For each node $ N $ in the B-Tree, the corresponding triangle $ T_i $ is filled with its stored color if it is a leaf node. If not, the process continues recursively for its child nodes.
 
-#### 6. **Reconstruction**
+#### 6. Reconstruction
 
 The reconstruction of the image $ I $ can be represented as:
 $ I = \bigcup_{i} T_i $
@@ -75,11 +75,11 @@ where each $ T_i $ is a triangular region filled with the appropriate color.
 
 #### Summary of Steps
 
-1. **Initial Decomposition**: Start with a triangle covering the whole image.
-2. **Uniformity Check**: Check if the triangle is uniform.
-3. **Subdivision**: If not uniform, subdivide the triangle into smaller triangles.
-4. **B-Tree Encoding**: Store the triangle and its subdivisions in a B-Tree structure.
-5. **Image Reconstruction**: Decode the B-Tree to reconstruct the image.
+1. Initial Decomposition: Start with a triangle covering the whole image.
+2. Uniformity Check: Check if the triangle is uniform.
+3. Subdivision: If not uniform, subdivide the triangle into smaller triangles.
+4. B-Tree Encoding: Store the triangle and its subdivisions in a B-Tree structure.
+5. Image Reconstruction: Decode the B-Tree to reconstruct the image.
 
 This mathematical model ensures efficient image compression by leveraging the properties of triangles and the hierarchical structure of B-Trees to represent and encode image data compactly.
     
