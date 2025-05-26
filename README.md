@@ -1,26 +1,4 @@
 
----------
----------
-
-# Universidad Nacional Autónoma de México 
-
-## Facultad de Estudios Superiores Acatlán 
-
-
-![Alt text](./img/FESAc.png "Image")
-
-## Licenciatura en Matematicas aplicadas y computacion
-
-
-#### Video Compression
-
-#### Segura Díaz Angel Daniel
-#### Sevilla Gallardo Saúl Sebastián
-
-#### Profesor: Pablo Martínez Castro (MACKAPPA)
-
----------
----------
 # Implementation of a video compressor using B-Tree Triangular Coding.
 
 
