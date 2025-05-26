@@ -42,13 +42,13 @@ where $T_{i1}, T_{i2}, T_{i3}$ are the new triangles formed by the subdivision.
 
 #### 5. Decoding Process
 
-The decoding process reconstructs the image by traversing the B-Tree and filling in the triangular regions. For each node $ N $ in the B-Tree, the corresponding triangle $T_i$ is filled with its stored color if it is a leaf node. If not, the process continues recursively for its child nodes.
+The decoding process reconstructs the image by traversing the B-Tree and filling in the triangular regions. For each node $N$ in the B-Tree, the corresponding triangle $T_i$ is filled with its stored color if it is a leaf node. If not, the process continues recursively for its child nodes.
 
 #### 6. Reconstruction
 
 The reconstruction of the image $I$ can be represented as:
 $I = \bigcup_{i} T_i$
-where each $ T_i $ is a triangular region filled with the appropriate color.
+where each $T_i$ is a triangular region filled with the appropriate color.
 
 #### Summary of Steps
 
